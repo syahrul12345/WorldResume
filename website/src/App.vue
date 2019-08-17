@@ -6,22 +6,6 @@
     app
     id="header"
     >
-        <!-- <v-container grid-list-xs>
-          <v-layout shrink>
-            <v-flex xs2 offset-xs3>
-              ABOUT
-            </v-flex>
-            <v-flex xs2>
-              WHY WORLD RESUME
-            </v-flex>
-            <v-flex xs2>
-              Employees
-            </v-flex>
-            <v-flex xs2>
-              Employers
-            </v-flex>
-          </v-layout>
-        </v-container> -->
     </v-app-bar>
     <v-content id = "animated">
       <router-view/>

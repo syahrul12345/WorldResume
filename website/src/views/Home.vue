@@ -10,12 +10,20 @@
         		</v-row>
           		<v-row justify="center">
           			<v-col md="auto">
-          				<v-btn
+          				<router-link
+                  :to="'/Verify'"
+                  style="text-decoration: none">
+                  <v-btn
           				> Employees </v-btn>
+                  </router-link>
           			</v-col>
           			<v-col md="auto">
+                  <router-link
+                  :to="'/Employers'"
+                   style="text-decoration: none">
           				<v-btn
           				> Employers </v-btn>
+                  </router-link>
           			</v-col>
           		</v-row>
           		<v-row justify="center" align="center">
@@ -23,7 +31,7 @@
       				:max-width="35"
       				aspect-raio="1"
       				:src="metmaskImage"></v-img>
-  					<p id="metamask"> Metmask Required</p>
+  					<p id="metamask"> Metamask Required</p>
           		</v-row>
         	</v-col>
         </v-row>
