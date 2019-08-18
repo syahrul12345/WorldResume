@@ -88,7 +88,13 @@
 		},
 		methods: {
 			save(){
-				this.$emit('save',{companyName:this.companyName,position:this.position,id:this.id,start:this.start,end:this.end})
+				let startYear = this.start.substring(0,4)
+				let startMonth = this.start.substring(5)
+				let endYear = this.end.substring(0,4)
+				let endMonth = this.end.substring(5)
+				const startDatum = Date.UTC(startYear,startMonth)
+				const endDatum = Date.UTC(endYear,endMonth)
+				this.$emit('save',{companyName:this.companyName,position:this.position,id:this.id,start:startDatum,end:endDatum})
 				this.overlay = true
 			},
 			close(){

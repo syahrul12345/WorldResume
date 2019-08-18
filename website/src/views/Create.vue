@@ -97,7 +97,7 @@
 			deleteValue(value){
 				let index = this.jobs.findIndex(e=> e.id === value.id)
 				this.jobs.splice(index,1)
-				
+
 			},
 			addJobCard(){
 				this.addJobCards++
@@ -116,24 +116,6 @@
 				})
 				_companyNames = this.stringToBytes32(_companyNames,this.web3)
 				_positions = this.stringToBytes32(_positions,this.web3)
-				console.log(_companyNames)
-				console.log(_positions)
-				console.log(_startTimes)
-				console.log(_endTimes)
-				// this.contract.methods.createPortfolio(
-				// 		this.digitalIdentity,
-				// 		this.name,
-				// 		this.blurb,
-				// 		_companyNames,
-				// 		_positions,
-				// 		_startTimes,
-				// 		_endTimes).send({
-				// 			from:this.digitalIdentity
-				// 		}).then((result) => {
-				// 			console.log(result)
-				// 		}).catch((error) => {
-				// 			console.log(error)
-				// 		})
 				try{
 					this.contract.methods.createPortfolio(
 						this.digitalIdentity,

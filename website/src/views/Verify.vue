@@ -44,6 +44,7 @@
 				metmask:null,
 				resumeNotFound:false,
 				digitalIdentity: null,
+				resumeAddress:null,
 				id:null,
 				web3:null,
 				contract:null,
@@ -93,11 +94,9 @@
 																			.call({from:this.digitalIdentity})
 				if(resumeAddress !== '0x0000000000000000000000000000000000000000'){
 					this.resumeNotFound = false
-					console.log(resumeAddress)
 					next()
 				}else {
 					this.resumeNotFound = true
-					console.log("resume not detected")
 				}
 			}else {
 				next()

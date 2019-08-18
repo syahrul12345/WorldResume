@@ -19,7 +19,7 @@ export default new Router({
     {
     	path:"/Employee/:resumeIdentity",
     	name:"employee",
-    	component: Employee
+    	component: Employee,
     },
     {
     	path:"/Verify",
