@@ -13,14 +13,14 @@
 							<v-text-field 
 							label="Company Name"
 							v-model="companyName"
-							@input="$emit('company-name',{id,companyName,position,start,end})">
+							>
 							</v-text-field>
 						</v-flex>
 						<v-flex xs6> 
 							<v-text-field 
 							label ="Position"
 							v-model="position"
-							@input="$emit('position',{id,companyName,position,start,end})">
+							>
 							</v-text-field>
 						</v-flex>
 					</v-layout>
@@ -28,21 +28,30 @@
 						<v-col md="auto"> 
 							<v-btn @click="startDialog=true"> Choose Start Date </v-btn>
 								<v-row justify="center">
+									<v-card>
 									<v-dialog v-model="startDialog" persistent max-width="300px">
-										<v-date-picker v-model="start":landscape="false" type="month">
+										<v-date-picker v-model="start":landscape="false" type="month" >
 										</v-date-picker>
-										 <v-btn :text="true" @click="startDialog = false	">OK</v-btn>
-									</v-dialog>
+										 <v-btn
+										 	dark
+											:text="true" 
+											@click="startDialog = false	">OK</v-btn>
+										</v-dialog>
+									</v-card>
 								</v-row>
 						</v-col>
 						<v-col md="auto">
 							<v-btn @click="endDialog=true"> Choose End Date </v-btn>
 								<v-row justify="center">
+									<v-card>
 									<v-dialog v-model="endDialog" persistent max-width="300px">
 										<v-date-picker v-model="end":landscape="false" type="month">
 										</v-date-picker>
-										 <v-btn :text="true" @click="endDialog = false">OK</v-btn>
+										<v-btn 
+										dark
+										:text="true" @click="endDialog = false">OK</v-btn>
 									</v-dialog>
+									</v-card>
 								</v-row>
 						</v-col>
 						<v-col md="auto">
@@ -83,11 +92,13 @@
 				this.overlay = true
 			},
 			close(){
+				this.$emit('close',{id:this.id})
 				this.shown = false
 			},
 			edit(){
 				this.overlay = false
-			}
+			},
+			
 		}
 	}
 </script>

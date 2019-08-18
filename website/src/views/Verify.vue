@@ -6,19 +6,24 @@
 					<v-col md="auto" :key="id">
 						<p id="mainText">Your Digital Identity is: {{digitalIdentity}}</p>
 					</v-col>
+					<v-col md="auto" v-if="resumeNotFound">
+						<p id="errorText">Resume not found. If you've just created it, please wait for a few minutes.</p>
+					</v-col>
 				</v-row>
 				<v-row justify="center">
 					<v-col md="auto">
 						<router-link
-						:to="'/Create'">
+						:to="'/Create'"
+						style="text-decoration: none">
 						<v-btn> Create </v-btn>
 						</router-link>
 					</v-col>
 					<v-col md="auto">
 						<router-link
 						:to="`/Employee/${digitalIdentity}`"
+						style="text-decoration: none"
 						>
-						<v-btn @click="viewResume"> View </v-btn>
+						<v-btn> View </v-btn>
 						</router-link>
 					</v-col>
 				</v-row>
@@ -37,6 +42,7 @@
 			return {
 				created: null,
 				metmask:null,
+				resumeNotFound:false,
 				digitalIdentity: null,
 				id:null,
 				web3:null,
@@ -79,19 +85,30 @@
 				next(from)
 			}
 		},
+		async beforeRouteLeave(to,from,next) {
+			if(to.name == "employee") {
+				const resumeAddress = await this.contract
+																			.methods
+																			.getPortfolioAddress()
+																			.call({from:this.digitalIdentity})
+				if(resumeAddress !== '0x0000000000000000000000000000000000000000'){
+					this.resumeNotFound = false
+					console.log(resumeAddress)
+					next()
+				}else {
+					this.resumeNotFound = true
+					console.log("resume not detected")
+				}
+			}else {
+				next()
+			}
+		},
 		methods: {
 			async createResume() {
 				if(window.ethereum) {
 					this.contract.methods.createPortfolio().send({
 						from:this.digitalIdentity
 					}).then((result) => {
-						console.log(result)
-					})
-				}
-			},
-			async viewResume(){
-				if(window.ethereum){
-					this.contract.methods.getPortfolioAddress().call({from:this.digitalIdentity}).then((result) => {
 						console.log(result)
 					})
 				}
@@ -105,5 +122,11 @@
 		text-align: center;
 		font-size:25px;
 		color: white;
+	}
+	#errorText {
+		font-family: "Monaco";
+		text-align: center;
+		font-size:25px;
+		color: red;
 	}
 </style>
