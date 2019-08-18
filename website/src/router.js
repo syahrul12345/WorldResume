@@ -3,6 +3,7 @@ import Router from "vue-router";
 import Home from "./views/Home.vue";
 import Employee from "./views/Employee.vue"
 import Verify from "./views/Verify.vue"
+import Create from "./views/Create.vue"
 
 Vue.use(Router);
 
@@ -24,6 +25,11 @@ export default new Router({
     	path:"/Verify",
     	name:"verify",
     	component: Verify
+    },
+    {
+      path:"/Create",
+      name:"create",
+      component: Create
     }
   ]
 });

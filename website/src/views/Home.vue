@@ -33,12 +33,22 @@
       				:src="metmaskImage"></v-img>
   					<p id="metamask"> Metamask Required</p>
           		</v-row>
+              <v-row justify="center">
+                <v-dialog v-model="dialog" persistent max-width="300px">
+                  <v-card>
+                    <v-card-title>No metamask detected!</v-card-title>
+                    <v-card-text> Please install metamask before proceeding</v-card-text>
+                    <v-card-actions>
+                      <v-btn :text="true" @click="dialog=false">OK</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-row>
         	</v-col>
         </v-row>
-
+        
  </v-container>
 </template>
-
 <script>
 export default {
   components: {
@@ -47,8 +57,23 @@ export default {
   	return {
   		text:"WorldResume, the new resume storage service for the world of Web3.",
   		text2:"Instantly create and personalize your own resume, and get it verfied by past employers.",
-  		metmaskImage:require('./../assets/metamask.svg')
+  		metmaskImage:require('./../assets/metamask.svg'),
+      dialog:false
+     
   	}
+  },
+  beforeRouteLeave(to,from,next) {
+    const self = this
+    if(to.name == "verify"){
+      if(window.ethereum){
+        next()
+      }else{
+        self.dialog=true
+      }
+    }else{
+      next()
+    }
+    
   }
 };
 </script>

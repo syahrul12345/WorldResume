@@ -9,16 +9,21 @@
 				</v-row>
 				<v-row justify="center">
 					<v-col md="auto">
-						<v-btn @click="createResume"> Create </v-btn>
+						<router-link
+						:to="'/Create'">
+						<v-btn> Create </v-btn>
+						</router-link>
 					</v-col>
 					<v-col md="auto">
-						<!-- <router-link
+						<router-link
 						:to="`/Employee/${digitalIdentity}`"
-						@click="getContract"> -->
+						>
 						<v-btn @click="viewResume"> View </v-btn>
-						<!-- </router-link> -->
+						</router-link>
 					</v-col>
 				</v-row>
+				<v-row justify="center">
+              </v-row>
 			</v-col>
 		</v-row>
 		
@@ -62,6 +67,18 @@
 
 			})
 		},
+		beforeRouteEnter(to,from,next) {
+			console.log("checking for metamask...")
+			if(window.ethereum) {
+				console.log("metamask detected")
+				next()
+			}else {
+				console.log("no metamask")
+				console.log("metamask should be checked for in the previous page")
+				console.log(from)
+				next(from)
+			}
+		},
 		methods: {
 			async createResume() {
 				if(window.ethereum) {
@@ -74,7 +91,7 @@
 			},
 			async viewResume(){
 				if(window.ethereum){
-					this.contract.methods.getPortfolioAddress().call().then((result) => {
+					this.contract.methods.getPortfolioAddress().call({from:this.digitalIdentity}).then((result) => {
 						console.log(result)
 					})
 				}
