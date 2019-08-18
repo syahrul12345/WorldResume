@@ -27,17 +27,22 @@
 						</router-link>
 					</v-col>
 				</v-row>
-				<v-row justify="center">
-              </v-row>
 			</v-col>
+			<v-dialog v-model="errorDialog" persistent max-width="300">
+				<ErrorDialog :error="errorDialogText" v-on:close="closeDialog"></ErrorDialog>
+			</v-dialog>
 		</v-row>
 		
 	</v-container>
 </template>
 <script>
 	import {getContractInfo} from '../utils/ethereum.js'
+	import ErrorDialog from "./../components/ErrorDialog.vue"
 	const Web3 = require('web3')
 	export default {
+		components: {
+			ErrorDialog
+		},
 		data() {
 			return {
 				created: null,
@@ -48,6 +53,8 @@
 				id:null,
 				web3:null,
 				contract:null,
+				errorDialog:false,
+				errorDialogText:null
 			}
 		},
 
@@ -87,17 +94,36 @@
 			}
 		},
 		async beforeRouteLeave(to,from,next) {
-			if(to.name == "employee") {
-				const resumeAddress = await this.contract.methods.getPortfolioAddress().call({from:this.digitalIdentity})
-				if(resumeAddress !== '0x0000000000000000000000000000000000000000'){
-					this.resumeNotFound = false
-					next()
-				}else {
-					this.resumeNotFound = true
+			//first check for network ID
+			window.web3.version.getNetwork((err,id) => {
+				switch(id){
+					case "1":
+						console.log("mainnet")
+						this.errorDialog = true
+						this.errorDialogText = "Your are on mainnet - please change to ROPSTEN"
+						break;
+					case "3":
+						console.log("you are on correct network")
+						if(to.name == "employee") {
+							this.contract.methods.getPortfolioAddress().call({from:this.digitalIdentity}).then((resumeAddress) => {
+									if(resumeAddress !== '0x0000000000000000000000000000000000000000'){
+										this.resumeNotFound = false
+										next()
+									}else {
+										this.resumeNotFound = true
+									}
+							})
+						}else {
+							next()
+						}
+						break;
+					default:
+						console.log("this is an unknown network")
+						break;
 				}
-			}else {
-				next()
-			}
+			})
+
+			
 		},
 		methods: {
 			async createResume() {
@@ -108,6 +134,9 @@
 						console.log(result)
 					})
 				}
+			},
+			closeDialog() {
+				this.errorDialog = false
 			}
 		}
 	}

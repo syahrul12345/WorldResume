@@ -37,24 +37,29 @@
 									</v-col>
 								</v-row>
 							</v-flex>
-							
 						</v-layout>
-						
 					</v-container>
 				</v-card>
+				<v-dialog v-model="errorDialog" persistent max-width="300">
+					<ErrorDialog :error="errorDialogText" v-on:close="closeDialog"></ErrorDialog>
+				</v-dialog>
+				<v-overlay :absolute="true" :value="transactionPending">
+				</v-overlay>
 			</v-flex>
 		</v-layout>
 	</v-container>
 </template>
 <script>
 	import AddJob from "../components/AddJob.vue"
+	import ErrorDialog from "./../components/ErrorDialog.vue"
 	import {getContractInfo} from '../utils/ethereum.js'
 	const Web3 = require('web3')
 	export default {
 
 		props:[],
 		components:{
-			AddJob
+			AddJob,
+			ErrorDialog
 		},
 		data() {
 			return {
@@ -65,6 +70,9 @@
 				digitalIdentity:null,
 				web3:null,
 				contract:null,
+				transactionPending:false,
+				errorDialog:false,
+				errorDialogText:null,
 				jobs: []
 			}
 		},
@@ -84,6 +92,9 @@
 			}
 		},
 		methods: {
+			closeDialog() {
+				this.errorDialog = false
+			},
 			updateValue(value){
 				//find if the object key exists
 				let item = this.jobs.find(e => e.id === value.id)
@@ -126,12 +137,17 @@
 						_startTimes,
 						_endTimes).send({
 							from:this.digitalIdentity
+						}).on((receipt)=> {
+							this.transactionPending = true								
 						}).then((result) => {
-							console.log(result)
+							this.transactionPending = false
 						}).catch((error) => {
+							this.transactionPending = false
 							console.log(error)
 						})
 					}catch (ex){
+						this.errorDialog = true
+						this.errorDialogText = ex.toString()
 						console.log(ex.toString())
 					}
 				

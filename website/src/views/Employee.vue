@@ -68,7 +68,6 @@
 			promiseArray.push(getContractInfo())
 			Promise.all(promiseArray).then((result)=>{
 				self.digitalIdentity = result[0][0]
-				console.log(self.digitalIdentity)
 				self.web3 = new Web3(ethereum)
 				self.contract = new self.web3.eth.Contract(result[1].portFolioABI,result[1].deployedAddress)
 				const promiseArray2 = []
@@ -88,7 +87,6 @@
 							const promiseArray = []
 							promiseArray.push(self.bytes32ToString(self.web3,item[0]))
 							promiseArray.push(self.bytes32ToString(self.web3,item[1]))
-							console.log(new Date(item[2]))
 							return Promise.all(promiseArray).then((result) =>{
 								return { name:result[0], position:result[1], start:item[2], end:item[3]}
 							})
@@ -98,7 +96,6 @@
 							.getDetails(self.digitalIdentity)
 							.call({from:self.digitalIdentity})
 							.then((results) => {
-								console.log(results)
 								self.name = results[0]
 								self.blurb = results[1]
 							})
