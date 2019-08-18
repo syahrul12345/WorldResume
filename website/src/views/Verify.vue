@@ -88,10 +88,7 @@
 		},
 		async beforeRouteLeave(to,from,next) {
 			if(to.name == "employee") {
-				const resumeAddress = await this.contract
-																			.methods
-																			.getPortfolioAddress()
-																			.call({from:this.digitalIdentity})
+				const resumeAddress = await this.contract.methods.getPortfolioAddress().call({from:this.digitalIdentity})
 				if(resumeAddress !== '0x0000000000000000000000000000000000000000'){
 					this.resumeNotFound = false
 					next()
