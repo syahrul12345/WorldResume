@@ -7,7 +7,7 @@
 				:hover="true">
 					<v-container>
 						<v-layout wrap>
-							<v-flex xs10 offset-xs1>
+							<v-flex xs12>
 								<v-form
 								ref="form"
 								:lazy-validation="true">
@@ -27,8 +27,18 @@
 									>
 									</AddJob>
 								</v-form>
+								<v-row justify="space-between">
+									<v-col md="auto">
+										<v-btn @click="addJobCard"> Add Job</v-btn>
+									</v-col>
+									<v-col md="auto">
+										<v-btn @click="confirm">Save to Blockchain </v-btn>
+									</v-col>
+								</v-row>
 							</v-flex>
+							
 						</v-layout>
+						
 					</v-container>
 				</v-card>
 			</v-flex>
@@ -48,7 +58,7 @@
 				name: null,
 				blurb:null,
 				created:true,
-				addJobCards:2,
+				addJobCards:1,
 				jobs: []
 			}
 		},
@@ -63,7 +73,14 @@
 					this.jobs[index] = value
 
 				}
-				console.log(value)
+				
+			},
+			addJobCard(){
+				this.addJobCards++
+				console.log("creating new job")
+			},
+			confirm(){
+				console.log(this.jobs)
 			}
 
 		}
