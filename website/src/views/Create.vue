@@ -30,6 +30,10 @@
 								</v-form>
 								<v-row justify="space-between">
 									<v-col md="auto">
+										<router-link
+										:to="'/'">
+										<v-btn class="mx-1"> Back </v-btn>
+										</router-link>
 										<v-btn @click="addJobCard"> Add Job</v-btn>
 									</v-col>
 									<v-col md="auto">
@@ -40,6 +44,7 @@
 						</v-layout>
 					</v-container>
 				</v-card>
+
 				<v-dialog v-model="errorDialog" persistent max-width="300">
 					<ErrorDialog :error="errorDialogText" v-on:close="closeDialog"></ErrorDialog>
 				</v-dialog>
@@ -119,37 +124,48 @@
 				let _positions=[]
 				const _startTimes=[]
 				const _endTimes=[]
-				this.jobs.forEach((item) =>{
-					_companyNames.push(item.companyName)
-					_positions.push(item.position)
-					_startTimes.push(item.start)
-					_endTimes.push(item.end)
-				})
-				_companyNames = this.stringToBytes32(_companyNames,this.web3)
-				_positions = this.stringToBytes32(_positions,this.web3)
-				try{
-					this.contract.methods.createPortfolio(
-						this.digitalIdentity,
-						this.name,
-						this.blurb,
-						_companyNames,
-						_positions,
-						_startTimes,
-						_endTimes).send({
-							from:this.digitalIdentity
-						}).on((receipt)=> {
-							this.transactionPending = true								
-						}).then((result) => {
-							this.transactionPending = false
-						}).catch((error) => {
-							this.transactionPending = false
-							console.log(error)
-						})
-					}catch (ex){
+				if(this.jobs.length != 0) {
+					this.jobs.forEach((item) =>{
+						_companyNames.push(item.companyName)
+						_positions.push(item.position)
+						_startTimes.push(item.start)
+						_endTimes.push(item.end)
+					})
+					_companyNames = this.stringToBytes32(_companyNames,this.web3)
+					_positions = this.stringToBytes32(_positions,this.web3)
+					try{
+						this.contract.methods.createPortfolio(
+							this.digitalIdentity,
+							this.name,
+							this.blurb,
+							_companyNames,
+							_positions,
+							_startTimes,
+							_endTimes).send({
+								from:this.digitalIdentity
+							}).on('transactionHash',hash =>{
+								//send the transaction and let's waiit
+								this.transactionPending = true
+								console.log(hash)
+							}).on('receipt',receipt => {
+								//transaction confirmed
+								this.transactionPending = false
+								console.log(receipt)
+							}).on('error',error => {
+								this.transactionPending = false
+								this.errorDialog = true
+								this.errorDialogText = error.toString()
+							})
+						}catch (ex){
+							this.errorDialog = true
+							this.errorDialogText = ex.toString()
+							console.log(ex.toString())
+						}
+					}else{
 						this.errorDialog = true
-						this.errorDialogText = ex.toString()
-						console.log(ex.toString())
+						this.errorDialogText = "Your resume needs some jobs :)"
 					}
+				
 				
 
 			},

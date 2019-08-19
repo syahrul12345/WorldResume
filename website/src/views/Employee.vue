@@ -84,20 +84,26 @@
 					})
 					Promise.all(jobData).then((result) => {
 						const converted = result.map((item) => {
+							//item[2] and item[3] are the dates
 							const promiseArray = []
 							promiseArray.push(self.bytes32ToString(self.web3,item[0]))
 							promiseArray.push(self.bytes32ToString(self.web3,item[1]))
+							const startDate = self.dateExtractor(new Date(Math.round(Number(item[2]))))
+							const endDate = self.dateExtractor(new Date(Math.round(Number(item[3]))))
+							const stringDate = startDate + ' - ' + endDate
 							return Promise.all(promiseArray).then((result) =>{
-								return { name:result[0], position:result[1], start:item[2], end:item[3]}
+								return { name:result[0], position:result[1], duration:stringDate}
 							})
 						})
 						Promise.all(converted).then((results) => {
+							console.log(results)
 							self.contract.methods
 							.getDetails(self.digitalIdentity)
 							.call({from:self.digitalIdentity})
 							.then((results) => {
 								self.name = results[0]
 								self.blurb = results[1]
+
 							})
 							self.employers = results
 						})
@@ -108,6 +114,12 @@
 		methods: {
 			bytes32ToString: async(web3,item) => {
 				return web3.utils.toAscii(item)
+			},
+			dateExtractor:(date) => {
+				const monthNames = ["January", "February", "March", "April", "May", "June",
+				  "July", "August", "September", "October", "November", "December"
+				];
+				return monthNames[date.getMonth()] + '-' + date.getUTCFullYear()
 			}
 		}
 	}
