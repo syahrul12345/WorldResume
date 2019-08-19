@@ -1,23 +1,23 @@
 <template>
   <v-container fill-height>
         <v-row>
-        	<v-col col="12">
+        	<v-col cols="12">
         		<v-row justify="center">
         			<p id="mainText">{{text}}</p>
         		</v-row>
         		<v-row justify="center">
         			<p id="introText">{{text2}}</p>>
         		</v-row>
-          		<v-row justify="center">
-          			<v-col md="auto">
+          		<v-row justify="center" justify-xs="end">
+          			<v-col cols="auto">
           				<router-link
                   :to="'/Verify'"
                   style="text-decoration: none">
                   <v-btn
-          				> Employees </v-btn>
+          				right="true"> Employees </v-btn>
                   </router-link>
           			</v-col>
-          			<v-col md="auto">
+          			<v-col cols="auto">
                   <router-link
                   :to="'/Employers'"
                    style="text-decoration: none">
@@ -79,21 +79,46 @@ export default {
 </script>
 
 <style>
-	#mainText {
-		font-family: "Monaco";
-		text-align: center;
-		font-size:50px;
-		color: white;
-	}
-	#introText {
-		font-family:"Monaco";
-		color: white;
-	}
-	#metamask {
-		font-family:"Monaco";
-		color: white;
-		text-align: center;
-		margin-top:15px;
-		margin-left:20px;
-	}
+@media(max-width: 600px){
+  #mainText {
+    font-family: "Monaco";
+    text-align: center;
+    font-size:25px;
+    color: white;
+  }
+  #introText {
+    font-family:"Monaco";
+    text-align: center;
+    color: white;
+  }
+  #metamask {
+    font-family:"Monaco";
+    color: white;
+    text-align: center;
+    margin-top:15px;
+    margin-left:20px;
+  }
+}
+@media(min-width: 601px){
+  #mainText {
+    font-family: "Monaco";
+    text-align: center;
+    font-size:50px;
+    color: white;
+  }
+  #introText {
+    font-family:"Monaco";
+    text-align: center;
+    color: white;
+  }
+  #metamask {
+    font-family:"Monaco";
+    color: white;
+    text-align: center;
+    margin-top:15px;
+    margin-left:20px;
+  }
+
+}
+	
 </style>

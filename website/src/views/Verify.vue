@@ -1,33 +1,35 @@
 <template>
-	<v-container fill-height>
-		<v-row>
-			<v-col col="12">
-				<v-row justify ="center">
-					<v-col md="auto" :key="id">
-						<p id="mainText">Your Digital Identity is: {{digitalIdentity}}</p>
+	<v-container fill-height align="center">
+		<v-col cols=12>
+			<v-row justify="center">
+					<p id="digitalIdentity">Your Digital Identity is: </p>
+			</v-row>
+			<v-row justify="center">
+					<v-col cols="auto">
+						<p id="address">{{digitalIdentity}}</p>
 					</v-col>
-					<v-col md="auto" v-if="resumeNotFound">
-						<p id="errorText">Resume not found. If you've just created it, please wait for a few minutes.</p>
-					</v-col>
-				</v-row>
-				<v-row justify="center">
-					<v-col md="auto">
-						<router-link
-						:to="'/Create'"
-						style="text-decoration: none">
-						<v-btn> Create </v-btn>
-						</router-link>
-					</v-col>
-					<v-col md="auto">
-						<router-link
-						:to="`/Employee/${digitalIdentity}`"
-						style="text-decoration: none"
-						>
-						<v-btn> View </v-btn>
-						</router-link>
-					</v-col>
-				</v-row>
-			</v-col>
+			</v-row>
+			<v-row justify="center">
+					<p v-if="resumeNotFound" id="errorText">Resume not found. If you've just created it, please wait for a few minutes.</p>
+			</v-row>
+			<v-row justify="center">
+				<v-col cols="auto">
+					<router-link
+					:to="'/Create'"
+					style="text-decoration: none">
+					<v-btn right> Create </v-btn>
+					</router-link>
+				</v-col>
+				<v-col cols="auto">
+					<router-link
+					:to="`/Employee/${digitalIdentity}`"
+					style="text-decoration: none"
+					>
+					<v-btn> View </v-btn>
+					</router-link>
+				</v-col>
+			</v-row>
+		</v-col>
 			<v-dialog v-model="errorDialog" persistent max-width="300">
 				<ErrorDialog :error="errorDialogText" v-on:close="closeDialog"></ErrorDialog>
 			</v-dialog>
@@ -142,11 +144,18 @@
 	}
 </script>
 <style>
-	#mainText {
+@media(max-width: 600px){
+	#digitalIdentity {
 		font-family: "Monaco";
 		text-align: center;
 		font-size:25px;
 		color: white;
+	}
+	#address {
+		font-family: "Monaco";
+		text-align: center;
+		font-size:15px;
+		color:white;
 	}
 	#errorText {
 		font-family: "Monaco";
@@ -154,4 +163,28 @@
 		font-size:25px;
 		color: red;
 	}
+
+}
+@media(min-width: 601px){
+	#digitalIdentity {
+		font-family: "Monaco";
+		text-align: center;
+		font-size:25px;
+		color: white;
+	}
+	#address {
+		font-family: "Monaco";
+		text-align: center;
+		font-size:20px;
+		color:white;
+	}
+	#errorText {
+		font-family: "Monaco";
+		text-align: center;
+		font-size:25px;
+		color: red;
+	}
+
+}
+	
 </style>
