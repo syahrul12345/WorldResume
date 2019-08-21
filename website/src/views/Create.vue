@@ -39,17 +39,25 @@
 									<v-col md="auto">
 										<v-btn @click="confirm">Save to Blockchain </v-btn>
 									</v-col>
+									<!-- <v-btn @click="transactionPending = !transactionPending">Overlay</v-btn> -->
 								</v-row>
 							</v-flex>
 						</v-layout>
 					</v-container>
-				</v-card>
 
+				</v-card>
+				<v-dialog v-model="transactionPending" persistent max-width="300">
+					<Loader :transactionHash="transactionHash"></Loader>
+				</v-dialog>
 				<v-dialog v-model="errorDialog" persistent max-width="300">
 					<ErrorDialog :error="errorDialogText" v-on:close="closeDialog"></ErrorDialog>
 				</v-dialog>
-				<v-overlay :absolute="true" :value="transactionPending">
-				</v-overlay>
+				
+
+				
+				<!-- <v-overlay :absolute="true" :value="transactionPending">
+
+				</v-overlay> -->
 			</v-flex>
 		</v-layout>
 	</v-container>
@@ -57,6 +65,7 @@
 <script>
 	import AddJob from "../components/AddJob.vue"
 	import ErrorDialog from "./../components/ErrorDialog.vue"
+	import Loader from "./../components/Loader.vue"
 	import {getContractInfo} from '../utils/ethereum.js'
 	const Web3 = require('web3')
 	export default {
@@ -64,7 +73,8 @@
 		props:[],
 		components:{
 			AddJob,
-			ErrorDialog
+			ErrorDialog,
+			Loader,
 		},
 		data() {
 			return {
@@ -76,6 +86,7 @@
 				web3:null,
 				contract:null,
 				transactionPending:false,
+				transactionHash:null,
 				errorDialog:false,
 				errorDialogText:null,
 				jobs: []
@@ -146,11 +157,13 @@
 							}).on('transactionHash',hash =>{
 								//send the transaction and let's waiit
 								this.transactionPending = true
-								console.log(hash)
+								this.transactionHash = hash;
 							}).on('receipt',receipt => {
 								//transaction confirmed
+								console.log("transaction confirmed")
 								this.transactionPending = false
-								console.log(receipt)
+								console.log("redirecting...")
+								this.$router.push(`/Employee/${this.digitalIdentity}`)
 							}).on('error',error => {
 								this.transactionPending = false
 								this.errorDialog = true
@@ -176,8 +189,7 @@
 					
 				})
 				return returnArray
-			}
-			
+			},
 
 		}
 	}

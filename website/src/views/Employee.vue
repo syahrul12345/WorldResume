@@ -37,16 +37,19 @@
 				<v-btn> Share </v-btn>
 			</v-col>
 		</v-row>
-		
+		<v-dialog v-model="loading" persistent max-width="300">
+			<Loader :resumeAddress="tempResumeAddress"></Loader>
+		</v-dialog>
 	</v-container>
 </template>
 <script>
 	import {getContractInfo} from '../utils/ethereum.js'
+	import Loader from "./../components/LoaderV2.vue"
 	const Web3 = require('web3')
 	export default{
 
 		components: {
-
+			Loader
 		},
 		data() {
 			return {
@@ -56,9 +59,11 @@
 				created:true,
 				digitalIdentity:null,
 				resumeAddress:null,
+				tempResumeAddress:null,
 				jobIds:null,
 				web3:null,
 				contract:null,
+				loading:false
 			}
 		},
 		async created(){
@@ -67,48 +72,55 @@
 			promiseArray.push(ethereum.enable())
 			promiseArray.push(getContractInfo())
 			Promise.all(promiseArray).then((result)=>{
-				self.digitalIdentity = result[0][0]
+				
 				self.web3 = new Web3(ethereum)
 				self.contract = new self.web3.eth.Contract(result[1].portFolioABI,result[1].deployedAddress)
 				const promiseArray2 = []
-				promiseArray2.push(self.contract.methods.getPortfolioAddress()
-																							.call({from:self.digitalIdentity}))
-				promiseArray2.push(self.contract.methods.getAllJobId(self.digitalIdentity)
-																								.call({from:self.digitalIdentity}))
-				Promise.all(promiseArray2).then((result) =>{
-					self.resumeAddress = result[0]
-					self.jobIds = result[1]
-					const jobData = self.jobIds.map((item) => {
-						const data = self.contract.methods.getJobById(self.digitalIdentity,item).call()
-						return data
-					})
-					Promise.all(jobData).then((result) => {
-						const converted = result.map((item) => {
-							//item[2] and item[3] are the dates
-							const promiseArray = []
-							promiseArray.push(self.bytes32ToString(self.web3,item[0]))
-							promiseArray.push(self.bytes32ToString(self.web3,item[1]))
-							const startDate = self.dateExtractor(new Date(Math.round(Number(item[2]))))
-							const endDate = self.dateExtractor(new Date(Math.round(Number(item[3]))))
-							const stringDate = startDate + ' - ' + endDate
-							return Promise.all(promiseArray).then((result) =>{
-								return { name:result[0], position:result[1], duration:stringDate}
-							})
+				try{
+					promiseArray2.push(self.contract.methods.getPortfolioAddress().call({from:this.$route.params.resumeIdentity}))
+					promiseArray2.push(self.contract.methods.getAllJobId(this.$route.params.resumeIdentity).call({from:this.$route.params.resumeIdentity}))
+					Promise.all(promiseArray2).then((result) =>{
+						self.tempResumeAddress = result[0]
+						self.loading = true
+						self.jobIds = result[1]
+						const jobData = self.jobIds.map((item) => {
+							const data = self.contract.methods.getJobById(this.$route.params.resumeIdentity,item).call()
+							return data
 						})
-						Promise.all(converted).then((results) => {
-							console.log(results)
-							self.contract.methods
-							.getDetails(self.digitalIdentity)
-							.call({from:self.digitalIdentity})
-							.then((results) => {
-								self.name = results[0]
-								self.blurb = results[1]
+						Promise.all(jobData).then((result) => {
+							const converted = result.map((item) => {
+								//item[2] and item[3] are the dates
+								const promiseArray = []
+								promiseArray.push(self.bytes32ToString(self.web3,item[0]))
+								promiseArray.push(self.bytes32ToString(self.web3,item[1]))
+								const startDate = self.dateExtractor(new Date(Math.round(Number(item[2]))))
+								const endDate = self.dateExtractor(new Date(Math.round(Number(item[3]))))
+								const stringDate = startDate + ' - ' + endDate
+								return Promise.all(promiseArray).then((result) =>{
+									return { name:result[0], position:result[1], duration:stringDate}
+								})
+							})
+							Promise.all(converted).then(async (results) => {
+								
+								result = await self.contract.methods
+								.getDetails(this.$route.params.resumeIdentity)
+								.call({from:this.$route.params.resumeIdentity})
+								.then((results) => {
+									return {name:results[0],blurb:results[1]}
 
+								})
+
+								self.name = result.name
+								self.blurb = result.blurb
+								self.resumeAddress =  self.tempResumeAddress
+								self.employers = results
+								self.loading = false
 							})
-							self.employers = results
 						})
 					})
-				})
+				}catch(ex){
+					console.log(ex.toString())
+				}
 			})
 		},
 		methods: {
@@ -121,7 +133,7 @@
 				];
 				return monthNames[date.getMonth()] + '-' + date.getUTCFullYear()
 			}
-		}
+		},
 	}
 </script>
 <style>
