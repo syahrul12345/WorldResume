@@ -30,26 +30,31 @@
 			</v-flex>
 		</v-layout>
 		<v-row justify="center" align ="center">
-			<v-col md="auto">
+			<v-col cols="auto">
 				<v-btn> Edit </v-btn>
 			</v-col>
-			<v-col md ="auto">
-				<v-btn> Share </v-btn>
+			<v-col cols ="auto">
+				<v-btn @click="share = !share"> Share </v-btn>
 			</v-col>
 		</v-row>
 		<v-dialog v-model="loading" persistent max-width="300">
 			<Loader :resumeAddress="tempResumeAddress"></Loader>
+		</v-dialog>
+		<v-dialog v-model="share" max-width="500">
+			<Share :resumeAddress="tempResumeAddress"></Share>
 		</v-dialog>
 	</v-container>
 </template>
 <script>
 	import {getContractInfo} from '../utils/ethereum.js'
 	import Loader from "./../components/LoaderV2.vue"
+	import Share from "./../components/Share.vue"
 	const Web3 = require('web3')
 	export default{
 
 		components: {
-			Loader
+			Loader,
+			Share
 		},
 		data() {
 			return {
@@ -63,7 +68,8 @@
 				jobIds:null,
 				web3:null,
 				contract:null,
-				loading:false
+				loading:false,
+				share:false,
 			}
 		},
 		async created(){
