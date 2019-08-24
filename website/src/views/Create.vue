@@ -69,7 +69,7 @@
 	import {getContractInfo} from '../utils/ethereum.js'
 	const Web3 = require('web3')
 	export default {
-
+		title: 'Create',
 		props:[],
 		components:{
 			AddJob,

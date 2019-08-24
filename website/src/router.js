@@ -4,7 +4,8 @@ import Home from "./views/Home.vue";
 import Employee from "./views/Employee.vue"
 import Verify from "./views/Verify.vue"
 import Create from "./views/Create.vue"
-
+import Employer from "./views/Employer.vue"
+import EmployerView from "./views/EmployerView.vue"
 Vue.use(Router);
 
 export default new Router({
@@ -30,6 +31,16 @@ export default new Router({
       path:"/Create",
       name:"create",
       component: Create
+    },
+    {
+      path:"/Employers",
+      name:"employer",
+      component: Employer
+    },
+    {
+      path:"/Employerview/:resumeIdentity",
+      name:"employerview",
+      component: EmployerView
     }
   ]
 });

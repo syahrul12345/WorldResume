@@ -29,7 +29,7 @@
 					</router-link>
 				</v-col>
 			</v-row>
-		</v-col>
+		</v-col>  
 			<v-dialog v-model="errorDialog" persistent max-width="300">
 				<ErrorDialog :error="errorDialogText" v-on:close="closeDialog"></ErrorDialog>
 			</v-dialog>
@@ -42,6 +42,7 @@
 	import ErrorDialog from "./../components/ErrorDialog.vue"
 	const Web3 = require('web3')
 	export default {
+		title:"Verification",
 		components: {
 			ErrorDialog
 		},

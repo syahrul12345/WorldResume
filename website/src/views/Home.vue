@@ -14,7 +14,7 @@
                   :to="'/Verify'"
                   style="text-decoration: none">
                   <v-btn
-          				right="true"> Employees </v-btn>
+          				> Employees </v-btn>
                   </router-link>
           			</v-col>
           			<v-col cols="auto">
@@ -51,6 +51,7 @@
 </template>
 <script>
 export default {
+  title: 'World Resume',
   components: {
   },
   data() {

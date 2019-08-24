@@ -14,19 +14,19 @@
 		<v-layout wrap>
 			<v-flex xs12>
 				<v-card
-					class="mb-4"
-					dark
-					:outline="false"
-					:text="true"
-					v-for="employer in employers"
-					:key="employer.id">
-						<h3>{{employer.name}}</h3>
-						<h3>{{employer.duration}} 
-							<span id="verify" v-if="employer.verified == true"> Verified</span>
-							<span id="verify" v-else> Not Verified </span>
-						</h3>
-						<h3>{{employer.position}}</h3>
-					</v-card>
+				class="mb-4"
+				dark
+				:outline="false"
+				:text="true"
+				v-for="employer in employers"
+				:key="employer.id">
+					<v-card-title>{{employer.name}}</v-card-title>
+					<v-card-text class="pb-0">{{employer.duration}} 
+						<span id="verify" v-if="employer.verified == true"> Verified</span>
+						<span id="verify" v-else> Not Verified </span>
+					</v-card-text>
+					<v-card-text class= "pt-0">{{employer.position}}</v-card-text>
+				</v-card>
 			</v-flex>
 		</v-layout>
 		<v-row justify="center" align ="center">
@@ -51,7 +51,7 @@
 	import Share from "./../components/Share.vue"
 	const Web3 = require('web3')
 	export default{
-
+		title:'Employee Data',
 		components: {
 			Loader,
 			Share

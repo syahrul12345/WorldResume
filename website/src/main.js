@@ -5,9 +5,12 @@ import store from "./store";
 import "./registerServiceWorker";
 import vuetify from './plugins/vuetify';
 import '@babel/polyfill'
+import VueClipboard from 'vue-clipboard2'
+import titleMixin from './mixin/mixin.js'
 
 Vue.config.productionTip = false;
-
+Vue.use(VueClipboard)
+Vue.mixin(titleMixin)
 new Vue({
   router,
   store,

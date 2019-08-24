@@ -5,19 +5,17 @@
 			<p class = "my-1">Share the link below as proof that your resume exists on the Blockchain!</p>
 			</v-row>
 			<v-row align="center" justify="center">
-				<v-cols cols="auto">
-					<v-text-field
-					v-model="resumeLink"
-					single-line
-					outlined>
-					</v-text-field>
-				</v-cols>
-				<v-cols cols="auto">
-					<v-btn> COPY</v-btn>
-				</v-cols>
-			<!-- <a 
-			target="_blank" rel="noopener noreferrer"
-			:href="resumeLink"><p class="mb-0"> Click on this link to see your resume on the blockchain..</p></a> -->
+				<v-col cols="auto">
+					<a :href="resumeLink" > Link </a>
+				</v-col>
+				<!-- <v-col cols="auto">
+					<v-btn @click="copy" v-clipboard="() => value"> COPY</v-btn>
+				</v-col> -->
+				<button
+				 @click="doCopy"
+				>
+				  Copy to clipboard
+				</button>
 			</v-row>
 		</v-card-text>
 	</v-card>
@@ -33,6 +31,15 @@
 		},
 		created(){
 			this.resumeLink = `https://ropsten.etherscan.io/address/${this.resumeAddress}`
+		},
+		methods: {
+			doCopy: function () {
+		        this.$copyText(this.resumeLink).then(function (e) {
+		          console.log(e)
+		        }, function (e) {
+		          console.log(e)
+		        })
+		    }
 		}
 	}
 </script>
