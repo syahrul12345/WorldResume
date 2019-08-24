@@ -15,6 +15,9 @@
 				created:true,
 				dialog:true
 			}
+		},
+		mounted() {
+			console.log(this.error)
 		}
 
 	}

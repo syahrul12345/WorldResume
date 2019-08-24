@@ -10,11 +10,13 @@
 				<v-container grid-list-xl>
 					<v-layout shrink>
 						<v-flex xs6>
-							<v-text-field 
+							<v-combobox
 							label="Company Name"
 							v-model="companyName"
+							:items="registeredEmployers"
+							:append-icon="svgPath"
 							>
-							</v-text-field>
+							</v-combobox>
 						</v-flex>
 						<v-flex xs6> 
 							<v-text-field 
@@ -71,8 +73,9 @@
 	</v-row>
 </template>
 <script>
+	import { mdiArrowDownBox } from '@mdi/js';
 	export default {
-		props:['id'],
+		props:['id','registeredEmployers'],
 		data() {
 			return {
 				shown:true,
@@ -83,7 +86,8 @@
 				start:new Date().toISOString().substr(0, 7),
 				end:new Date().toISOString().substr(0, 7),
 				startDialog:false,
-				endDialog:false
+				endDialog:false,
+				svgPath: mdiArrowDownBox,
 			}
 		},
 		methods: {
@@ -104,6 +108,10 @@
 			edit(){
 				this.overlay = false
 			},
+			allJobs(){
+				this.companyDropDownField = true
+			}
+			
 			
 		}
 	}

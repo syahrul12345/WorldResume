@@ -23,6 +23,7 @@
 									class = "mb-5"
 									v-for="i in addJobCards"
 									:id="i"
+									:registeredEmployers="registeredEmployers"
 									v-on:save="updateValue($event)"
 									v-on:close="deleteValue($event)"
 									>
@@ -39,7 +40,7 @@
 									<v-col md="auto">
 										<v-btn @click="confirm">Save to Blockchain </v-btn>
 									</v-col>
-									<!-- <v-btn @click="transactionPending = !transactionPending">Overlay</v-btn> -->
+									
 								</v-row>
 							</v-flex>
 						</v-layout>
@@ -66,7 +67,7 @@
 	import AddJob from "../components/AddJob.vue"
 	import ErrorDialog from "./../components/ErrorDialog.vue"
 	import Loader from "./../components/Loader.vue"
-	import {getContractInfo} from '../utils/ethereum.js'
+	import {getContractInfo,getEmployerTracker} from '../utils/ethereum.js'
 	const Web3 = require('web3')
 	export default {
 		title: 'Create',
@@ -89,6 +90,8 @@
 				transactionHash:null,
 				errorDialog:false,
 				errorDialogText:null,
+				employerTracker:null,
+				registeredEmployers:null,
 				jobs: []
 			}
 		},
@@ -100,9 +103,14 @@
 				//we also want to set the web3 & contract
 				this.web3 = new Web3(ethereum)
 				const results = await getContractInfo()
-				const factoryAbi = results.portFolioABI
-				const factoryAddress = results.deployedAddress
-				this.contract = await new this.web3.eth.Contract(factoryAbi,factoryAddress)
+				this.contract = new this.web3.eth.Contract(results.portFolioABI,results.deployedAddress)
+
+				const employerResults = await getEmployerTracker()
+				this.employerTracker = new this.web3.eth.Contract(employerResults.employerTrackerABI,employerResults.deployedAddress)
+				this.employerTracker.methods.getAllEmployers().call().then((result) => {
+					this.registeredEmployers = this.bytes32ToString(result,this.web3)
+					
+				})
 			}else {
 				console.log("No metamask")
 			}
@@ -190,6 +198,13 @@
 				})
 				return returnArray
 			},
+			bytes32ToString(bytes32Array,web3) {
+				const returnArray = []
+				bytes32Array.forEach((item) => {
+					returnArray.push(web3.utils.toAscii(item))
+				})
+				return returnArray
+			}
 
 		}
 	}

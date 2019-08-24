@@ -23,7 +23,7 @@
 							<v-col cols="2" md="2" sm="2"class="px2">
 								<v-btn 
 								dark
-								class="my-1"> Register </v-btn>
+								class="my-1" @click="register"> Register </v-btn>
 							</v-col>
 							</v-row>
 						</v-card>
@@ -69,25 +69,29 @@
 				</v-card>
 			</v-dialog>
 			<v-dialog v-model="errorCall" persistent max-width="300">
-				<ErrorDialog :errorMessage="errorMessage" v-on:close="errorCall =! errorCall"></ErrorDialog>
+				<ErrorDialog :error="errorMessage" v-on:close="errorCall =! errorCall"></ErrorDialog>
+			</v-dialog>
+			<v-dialog v-model="registerLoading" persistent max-width="300">
+					<Loader :transactionHash="transactionHash"></Loader>
 			</v-dialog>
 		</v-row>
 	</v-container>
 </template>
 <script>
 	const Web3 = require('web3')
-	import {getPortfolioInfo} from './../utils/ethereum.js'
+	import {getPortfolioInfo,getEmployerTracker} from './../utils/ethereum.js'
 	import ErrorDialog from './../components/ErrorDialog.vue'
+	import Loader from './../components/Loader.vue'
 	export default {
 		title:'Employers',
 		props:[],
 		components:{
-			ErrorDialog
+			ErrorDialog,
+			Loader
 		},
 		data() {
 			return {
 				created:true,
-				errorMessage:null,
 				errorDialog:false,
 				resumeAddress:null,
 				companyName:null,
@@ -97,6 +101,9 @@
 				resumeContract:null,
 				errorMessage:null,
 				errorCall:null,
+				registerLoading:false,
+				loadingText:null,
+				transactionHash:null,
 			}
 		},
 		mounted() {
@@ -155,6 +162,34 @@
 					this.errorCall = true
 				})
 				
+			},
+			async register(){
+				const result = await getEmployerTracker()
+				const abi = result.employerTrackerABI
+				const address = result.deployedAddress
+				const accounts = await ethereum.enable()
+				const employerTracker = new this.web3.eth.Contract(abi,address)
+				employerTracker.methods.register(this.stringToBytes32(this.companyName)).send({
+					from:accounts[0]
+				}).on('transactionHash',(transactionHash) => {
+					this.transactionHash = transactionHash
+					this.registerLoading = true
+					console.log(transactionHash)
+				}).on('receipt',(receipt) => {
+					this.registerLoading = false
+					console.log(receipt)
+				}).on('error',(error) => {
+					this.registerLoading = false
+					this.errorCall = true
+					this.errorMessage = "Transaction failed, you have already registered as an employer"
+					console.log(error)
+				})
+			},
+			stringToBytes32(item) {
+				return this.web3.utils.toHex(item)
+			},
+			bytes32ToString(item){
+				return this.web3.utils.toAscii(item)
 			}
 		}
 		
