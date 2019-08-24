@@ -15,6 +15,7 @@
 							v-model="companyName"
 							:items="registeredEmployers"
 							:append-icon="svgPath"
+							:hint = "companyValidator"
 							>
 							</v-combobox>
 						</v-flex>
@@ -69,13 +70,20 @@
 			<v-overlay :absolute="absolute" :value="overlay"> 
 				<v-btn @click="edit"> EDIT </v-btn>
 			</v-overlay>
+			<v-dialog v-model="errorDialog" persistent max-width="300">
+				<ErrorDialog :error="errorDialogText" v-on:close="errorDialog = !errorDialog"></ErrorDialog>
+			</v-dialog>
 		</v-card>
 	</v-row>
 </template>
 <script>
 	import { mdiArrowDownBox } from '@mdi/js';
+	import ErrorDialog from './ErrorDialog.vue'
 	export default {
-		props:['id','registeredEmployers'],
+		props:['id','registeredEmployers','employerHash'],
+		components: {
+			ErrorDialog
+		},
 		data() {
 			return {
 				shown:true,
@@ -88,6 +96,20 @@
 				startDialog:false,
 				endDialog:false,
 				svgPath: mdiArrowDownBox,
+				errorDialogText:null,
+				errorDialog:false,
+				collection: {},
+				companyValidator: null
+			}
+		},
+		watch: {
+			companyName: function(newVal,oldVal) {
+				if(this.employerHash[newVal] == undefined){
+					console.log("here")
+					this.companyValidator = "This company doesn't exist on the blockchain"
+				}else{
+					this.companyValidator = "This company is registered"
+				}
 			}
 		},
 		methods: {
@@ -98,7 +120,7 @@
 				let endMonth = this.end.substring(5)
 				const startDatum = Date.UTC(startYear,startMonth)
 				const endDatum = Date.UTC(endYear,endMonth)
-				this.$emit('save',{companyName:this.companyName,position:this.position,id:this.id,start:startDatum,end:endDatum})
+				this.$emit('save',{companyName:this.companyName,position:this.position,id:this.id,start:startDatum,end:endDatum,companyAddress:this.employerHash[this.companyName]})
 				this.overlay = true
 			},
 			close(){

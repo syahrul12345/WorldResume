@@ -90,24 +90,33 @@
 						self.loading = true
 						self.jobIds = result[1]
 						const jobData = self.jobIds.map((item) => {
+							//call the blockchain for each jobid
 							const data = self.contract.methods.getJobById(this.$route.params.resumeIdentity,item).call()
 							return data
 						})
 						Promise.all(jobData).then((result) => {
 							const converted = result.map((item) => {
-								//item[2] and item[3] are the dates
+								//item[0] = name of company
+								//item[1] = address of company
+								//item[2] = position
+								//itemp[3] = start
+								//item[4] = end
+								//item[5] = verificaiton
+
+								
 								const promiseArray = []
 								promiseArray.push(self.bytes32ToString(self.web3,item[0]))
-								promiseArray.push(self.bytes32ToString(self.web3,item[1]))
-								const startDate = self.dateExtractor(new Date(Math.round(Number(item[2]))))
-								const endDate = self.dateExtractor(new Date(Math.round(Number(item[3]))))
+								promiseArray.push(self.bytes32ToString(self.web3,item[2]))
+								const startDate = self.dateExtractor(new Date(Math.round(Number(item[3]))))
+								const endDate = self.dateExtractor(new Date(Math.round(Number(item[4]))))
 								const stringDate = startDate + ' - ' + endDate
 								return Promise.all(promiseArray).then((result) =>{
+									console.log(result)
 									return { name:result[0], position:result[1], duration:stringDate}
 								})
 							})
+
 							Promise.all(converted).then(async (results) => {
-								
 								result = await self.contract.methods
 								.getDetails(this.$route.params.resumeIdentity)
 								.call({from:this.$route.params.resumeIdentity})

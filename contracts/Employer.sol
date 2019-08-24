@@ -16,12 +16,14 @@ contract Employer {
 		employers[msg.sender] = _name;
 		
 	}
-	function getAllEmployers() external returns (bytes32[] memory) {
-		bytes32[] memory results = new bytes32[](addresses.length);
+	function getAllEmployers() external view returns (bytes32[] memory,address[] memory) {
+		bytes32[] memory nameResults = new bytes32[](addresses.length);
+		address[] memory addressResults = new address[](addresses.length);
 		for(uint i =0;i<addresses.length;i++){
-			results[i] = employers[addresses[i]];
+			nameResults[i] = employers[addresses[i]];
+			addressResults[i] = addresses[i];
 		}
-		return results;
+		return (nameResults,addressResults);
 	}
 
 }

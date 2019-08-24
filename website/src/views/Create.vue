@@ -24,6 +24,7 @@
 									v-for="i in addJobCards"
 									:id="i"
 									:registeredEmployers="registeredEmployers"
+									:employerHash="employerHash"
 									v-on:save="updateValue($event)"
 									v-on:close="deleteValue($event)"
 									>
@@ -92,6 +93,7 @@
 				errorDialogText:null,
 				employerTracker:null,
 				registeredEmployers:null,
+				employerHash:{},
 				jobs: []
 			}
 		},
@@ -108,9 +110,15 @@
 				const employerResults = await getEmployerTracker()
 				this.employerTracker = new this.web3.eth.Contract(employerResults.employerTrackerABI,employerResults.deployedAddress)
 				this.employerTracker.methods.getAllEmployers().call().then((result) => {
-					this.registeredEmployers = this.bytes32ToString(result,this.web3)
-					
+					this.registeredEmployers = this.bytes32ToString(result[0],this.web3)
+					const employerAddresses = result[1]
+					for(var i =0;i<this.registeredEmployers.length;i++){
+						this.employerHash[this.registeredEmployers[i]] = employerAddresses[i]
+					}
+
 				})
+
+
 			}else {
 				console.log("No metamask")
 			}
@@ -139,7 +147,9 @@
 				console.log("creating new job")
 			},
 			confirm(){
+				console.log(this.jobs)
 				let _companyNames = []
+				let _companyAddress = []
 				let _positions=[]
 				const _startTimes=[]
 				const _endTimes=[]
@@ -149,6 +159,12 @@
 						_positions.push(item.position)
 						_startTimes.push(item.start)
 						_endTimes.push(item.end)
+						if(item.companyAddress == null || item.companyAddress == undefined){
+							//use the eth burn address
+							_companyAddress.push('0x000000000000000000000000000000000000dEaD')
+						}else{
+							_companyAddress.push(item.companyAddress)
+						}
 					})
 					_companyNames = this.stringToBytes32(_companyNames,this.web3)
 					_positions = this.stringToBytes32(_positions,this.web3)
@@ -158,6 +174,7 @@
 							this.name,
 							this.blurb,
 							_companyNames,
+							_companyAddress,
 							_positions,
 							_startTimes,
 							_endTimes).send({
