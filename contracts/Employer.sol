@@ -1,20 +1,27 @@
-pragma solidity = 0.5.0;
+pragma solidity = 0.5.9;
 
 contract Employer {
-	mapping(address => string) employers;
-	address[] public addresses
-
-	address public owner
+	mapping(address => bytes32) employers;
+	address[] public addresses;
+	address public owner;
 	uint private count;
 	constructor() public {
 		owner = msg.sender;
 		count = 0;
 	}
 
-	function register(string calldata _name) external {
-		require(addresses[msg.sender] == 0);
+	function register(bytes32 _name) external {
+		require(employers[msg.sender] == 0);
+		addresses.push(msg.sender);
 		employers[msg.sender] = _name;
 		
+	}
+	function getAllEmployers() external returns (bytes32[] memory) {
+		bytes32[] memory results = new bytes32[](addresses.length);
+		for(uint i =0;i<addresses.length;i++){
+			results[i] = employers[addresses[i]];
+		}
+		return results;
 	}
 
 }
