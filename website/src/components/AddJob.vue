@@ -105,7 +105,6 @@
 		watch: {
 			companyName: function(newVal,oldVal) {
 				if(this.employerHash[newVal] == undefined){
-					console.log("here")
 					this.companyValidator = "This company doesn't exist on the blockchain"
 				}else{
 					this.companyValidator = "This company is registered"

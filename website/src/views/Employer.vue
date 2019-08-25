@@ -158,7 +158,7 @@
 					//go to the employee version of the resume page
 					this.$router.push(`/Employerview/${this.resumeAddress}`)
 				}).catch((error) => {
-					this.errorMessage = error
+					this.errorMessage = "This account isn't a resume contract. Make sure to get the correct contract address!"
 					this.errorCall = true
 				})
 				
@@ -174,15 +174,12 @@
 				}).on('transactionHash',(transactionHash) => {
 					this.transactionHash = transactionHash
 					this.registerLoading = true
-					console.log(transactionHash)
 				}).on('receipt',(receipt) => {
 					this.registerLoading = false
-					console.log(receipt)
 				}).on('error',(error) => {
 					this.registerLoading = false
 					this.errorCall = true
 					this.errorMessage = "Transaction failed, you have already registered as an employer"
-					console.log(error)
 				})
 			},
 			stringToBytes32(item) {

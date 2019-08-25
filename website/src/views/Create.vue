@@ -144,10 +144,8 @@
 			},
 			addJobCard(){
 				this.addJobCards++
-				console.log("creating new job")
 			},
 			confirm(){
-				console.log(this.jobs)
 				let _companyNames = []
 				let _companyAddress = []
 				let _positions=[]
@@ -185,9 +183,7 @@
 								this.transactionHash = hash;
 							}).on('receipt',receipt => {
 								//transaction confirmed
-								console.log("transaction confirmed")
 								this.transactionPending = false
-								console.log("redirecting...")
 								this.$router.push(`/Employee/${this.digitalIdentity}`)
 							}).on('error',error => {
 								this.transactionPending = false

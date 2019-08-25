@@ -137,7 +137,6 @@
 						this.loadingVerify = false;
 						this.errorDialogText = "Failed to verify. Most likely it's because you're not the employer, so you can't verify the job! Please process to register"
 						this.errorDialog = true
-						console.log(error)
 					})
 
 				}else{

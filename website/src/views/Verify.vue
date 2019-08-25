@@ -85,7 +85,6 @@
 			})
 		},
 		beforeRouteEnter(to,from,next) {
-			console.log("checking for metamask...")
 			if(window.ethereum) {
 				console.log("metamask detected")
 				next()

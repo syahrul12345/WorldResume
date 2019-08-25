@@ -103,7 +103,6 @@
 								//item[4] = end
 								//item[5] = verificaiton
 
-								
 								const promiseArray = []
 								promiseArray.push(self.bytes32ToString(self.web3,item[0]))
 								promiseArray.push(self.bytes32ToString(self.web3,item[2]))
@@ -111,8 +110,7 @@
 								const endDate = self.dateExtractor(new Date(Math.round(Number(item[4]))))
 								const stringDate = startDate + ' - ' + endDate
 								return Promise.all(promiseArray).then((result) =>{
-									console.log(result)
-									return { name:result[0], position:result[1], duration:stringDate}
+									return { name:result[0], position:result[1], duration:stringDate,verified:item[5]}
 								})
 							})
 
