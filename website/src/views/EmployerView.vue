@@ -126,6 +126,8 @@
 			async verify(value) {
 				if(window.ethereum){
 					const accounts = await ethereum.enable()
+					console.log("started verification")
+					console.log(`job id to be verified ${value}`)
 					this.portfolio.methods.verify(value).send({
 						from:accounts[0]
 					}).on('transactionHash',(transactionHash) => {
@@ -138,6 +140,13 @@
 						this.errorDialogText = "Failed to verify. Most likely it's because you're not the employer, so you can't verify the job! Please process to register"
 						this.errorDialog = true
 					})
+					console.log("watching for event")
+					//watches the event being fired
+					this.portfolio.events.Verified({
+					}).on('data', function(event){
+					    console.log(event); // same results as the optional callback above
+					})
+					
 
 				}else{
 					this.errorDialog = true
