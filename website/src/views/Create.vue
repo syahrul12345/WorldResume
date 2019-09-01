@@ -115,10 +115,7 @@
 					for(var i =0;i<this.registeredEmployers.length;i++){
 						this.employerHash[this.registeredEmployers[i]] = employerAddresses[i]
 					}
-
 				})
-
-
 			}else {
 				console.log("No metamask")
 			}
