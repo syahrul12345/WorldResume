@@ -60,3 +60,8 @@ typings/
 # next.js build output
 .next
 password.js
+
+#server backend
+server/server
+server/sample.log
+server/sampel.pid
