@@ -60,6 +60,8 @@ typings/
 # next.js build output
 .next
 password.js
+dist
+/dist
 
 #server backend
 server/server
